@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:productivity_metrics/Widgets/RotaryAnimatedNavigator.dart';
+import 'package:productivity_metrics/resources/AppColors.dart';
 
 void main() => runApp(new  ProductivityMetricsApp());
 class ProductivityMetricsApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    AppColors.initalizeColors(scheme: UIColorSchemes.orange);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Productivity Metrics",
-      theme: ThemeData(
-        primarySwatch: Colors.orange
-      ),
+      theme: AppColors.theme,
       home: new TodaysTasks(),
     );
   }
@@ -31,7 +31,7 @@ class _TodaysTasksState extends State<TodaysTasks> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-            title:new Text("TODO:fix this!!",style: new TextStyle(color: Colors.white),),
+            title:new Text("Priductivity Metrics",style:TextStyle(color:AppColors.Secondary,)),
         ),
         body:Stack(
           alignment: Alignment.center,
