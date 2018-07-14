@@ -24,7 +24,7 @@ class Settings extends StatelessWidget {
                   Text("App theme:", style: TextStyle(fontSize: 20.0),),
                   DropdownButton<String>(
                    // value: "Select",
-                    items: <String>["Dark", "Blue", "Green", "Orange"].map((
+                    items: <String>["Dark", "Blue", "Green", "Orange","red"].map((
                         String value) {
                       return new DropdownMenuItem<String>(
                         value: value,
@@ -46,6 +46,9 @@ class Settings extends StatelessWidget {
                       }else if(_value=="Orange"){
                         ThemeColorProvider.of(context).appTheme=UIColorSchemes.orange;
                         ThemeColorProvider.of(context).appColors.initalizeColors(scheme: UIColorSchemes.orange);
+                      }else if(_value=="red"){
+                        ThemeColorProvider.of(context).appTheme=UIColorSchemes.red;
+                        ThemeColorProvider.of(context).appColors.initalizeColors(scheme: UIColorSchemes.red);
                       }
                     }
                     ,)

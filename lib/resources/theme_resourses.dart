@@ -54,6 +54,7 @@ class AppThemeState extends State<AppColorTheme> {
 
 class ThemeColorProvider extends InheritedWidget {
 
+
   static ThemeColorProvider of(BuildContext context) {
     return context.inheritFromWidgetOfExactType(ThemeColorProvider);
   }
@@ -69,6 +70,7 @@ class ThemeColorProvider extends InheritedWidget {
   }) : _appThemeKey = appThemeKey, super(child: child);
 //magic happens here
   set appTheme(UIColorSchemes theme) {
+
     switch (theme) {
       case UIColorSchemes.dark:
         (_appThemeKey.currentState as AppThemeState)?.theme = ThemeData.dark();
@@ -79,7 +81,9 @@ class ThemeColorProvider extends InheritedWidget {
       case UIColorSchemes.blue:
         (_appThemeKey.currentState as AppThemeState)?.theme = ThemeData(primarySwatch: Colors.blue);
         break;
-
+      case UIColorSchemes.red:
+        (_appThemeKey.currentState as AppThemeState)?.theme = ThemeData(primarySwatch: Colors.red);
+        break;
       default:
         (_appThemeKey.currentState as AppThemeState)?.theme = ThemeData(primarySwatch: Colors.orange);
         break;
@@ -107,22 +111,29 @@ class AppColors{
   Color _primaryOpace=Colors.orange.withOpacity(0.5);
   Color get primaryOpace => _primaryOpace;
 
+  UIColorSchemes currentTheme=UIColorSchemes.orange;
+
   initalizeColors({@required UIColorSchemes scheme=UIColorSchemes.orange}){
+    currentTheme=scheme;
     if(scheme==UIColorSchemes.orange){
-      _primaryOpace=Colors.orange.withOpacity(0.5);
+      _primaryOpace=Colors.orange.withOpacity(0.4);
       _primary=Colors.orange;
       _secondary=Colors.white;
     }else if(scheme==UIColorSchemes.dark){
-      _primaryOpace=Color.fromRGBO(Colors.black.red,Colors.black.green,Colors.black.blue, 0.5);
+      _primaryOpace=Color.fromRGBO(Colors.black.red,Colors.black.green,Colors.black.blue, 0.4);
       _primary=Colors.black87;
       _secondary=Colors.orange;
     }else if(scheme==UIColorSchemes.blue){
-      _primaryOpace=Color.fromRGBO(Colors.blue.red,Colors.blue.green,Colors.blue.blue, 0.5);
+      _primaryOpace=Color.fromRGBO(Colors.blue.red,Colors.blue.green,Colors.blue.blue, 0.4);
       _primary=Colors.blue;
       _secondary=Colors.white;
     }else if(scheme==UIColorSchemes.green){
-      _primaryOpace=Color.fromRGBO(Colors.green.red,Colors.green.green,Colors.green.blue, 0.5);//TODO fix this embarassment
+      _primaryOpace=Color.fromRGBO(Colors.green.red,Colors.green.green,Colors.green.blue, 0.4);//TODO fix this embarassment
       _primary=Colors.green;
+      _secondary=Colors.white;
+    }else if(scheme==UIColorSchemes.red){
+      _primaryOpace=Colors.red.withOpacity(0.4);//TODO fix this embarassment
+      _primary=Colors.red;
       _secondary=Colors.white;
     }
 
@@ -136,5 +147,6 @@ enum UIColorSchemes{
   orange,
   dark,
   blue,
-  green
+  green,
+  red
 }
