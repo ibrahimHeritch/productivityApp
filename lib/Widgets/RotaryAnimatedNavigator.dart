@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:productivity_metrics/resources/AppColors.dart';
+import 'package:productivity_metrics/Widgets/Settings.dart';
+import 'package:productivity_metrics/resources/theme_resourses.dart';
 
 /**
- * This class contains the central navigation button and its animation
+ * This class contains the central menu button and its animation
  *
  */
 //TODO make this generic
-class RotaryAnimatedNavigator extends StatefulWidget {
+//TODO Fix background of the round thingy
+class RotaryAnimatedMenu extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return new RANState();
@@ -14,8 +16,8 @@ class RotaryAnimatedNavigator extends StatefulWidget {
 
 }
 
-class RANState extends State<RotaryAnimatedNavigator>
-    with SingleTickerProviderStateMixin<RotaryAnimatedNavigator> {
+class RANState extends State<RotaryAnimatedMenu>
+    with SingleTickerProviderStateMixin<RotaryAnimatedMenu> {
   AnimationController _animationController;
   Animation<double> _animation;
   Animation<Color> _colorAnimation;
@@ -31,7 +33,7 @@ class RANState extends State<RotaryAnimatedNavigator>
         setState(() {});
       });
     _colorAnimation =
-        ColorTween(begin: AppColors.Primary, end: AppColors.primaryOpace)
+        ColorTween(begin: /*ColorProvider.of(context).appColors.Primary*/Colors.grey, end: Colors.grey.withOpacity(0.5))
             .animate(_animationController);
 
     isOpen = false;
@@ -55,9 +57,17 @@ class RANState extends State<RotaryAnimatedNavigator>
             child: FractionalTranslation(
               translation: Offset(-1.2, 0.0),
               child: FloatingActionButton(
-                backgroundColor: AppColors.Primary,
-                onPressed: () {},
-                child: new Icon(Icons.settings, color: AppColors.Secondary,),
+                heroTag: null,
+                backgroundColor: ThemeColorProvider.of(context).appColors.primary,
+                onPressed: () {
+                  _animationController.reverse();
+                  isOpen=!isOpen;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Settings()),
+                  );
+                },
+                child: new Icon(Icons.settings, color: ThemeColorProvider.of(context).appColors.secondary,),
               ),
             )
         ),
@@ -71,10 +81,11 @@ class RANState extends State<RotaryAnimatedNavigator>
             child: FractionalTranslation(
               translation: Offset(1.2, 0.0),
               child: FloatingActionButton(
-                backgroundColor: AppColors.Primary,
+                heroTag: null,
+                backgroundColor: ThemeColorProvider.of(context).appColors.primary,
                 onPressed: () {},
                 child: new Icon(Icons.trending_up,
-                  color: AppColors.Secondary,),
+                  color: ThemeColorProvider.of(context).appColors.secondary,),
               ),
             )
         ),
@@ -88,10 +99,11 @@ class RANState extends State<RotaryAnimatedNavigator>
             child: FractionalTranslation(
               translation: Offset(0.7, -1.2),
               child: FloatingActionButton(
-                backgroundColor: AppColors.Primary,
+                heroTag: null,
+                backgroundColor: ThemeColorProvider.of(context).appColors.primary,
                 onPressed: () {},
                 child: new Icon(Icons.add,
-                  color: AppColors.Secondary,),
+                  color: ThemeColorProvider.of(context).appColors.secondary,),
               ),
             )
         ),
@@ -99,17 +111,18 @@ class RANState extends State<RotaryAnimatedNavigator>
            search button
          */
         Positioned(
-            bottom: 17.0 + (_animation.value * 65), /*+65*/
+            bottom: 17.0 + (_animation.value * 65),
             height: 54.0,
             width: 54.0,
             child: FractionalTranslation(
               translation: Offset(-0.7, -1.2),
               child: FloatingActionButton(
-                backgroundColor: AppColors.Primary,
+                heroTag: null,
+                backgroundColor: ThemeColorProvider.of(context).appColors.primary,
                 onPressed: () {},
                 child: new Icon(
                   Icons.search,
-                  color: AppColors.Secondary,
+                  color: ThemeColorProvider.of(context).appColors.secondary,
                 ),
 
               ),
@@ -148,6 +161,7 @@ class RANState extends State<RotaryAnimatedNavigator>
       child: Padding(
         padding: const EdgeInsets.all(0.0),
         child: FloatingActionButton(
+          heroTag: null,
           onPressed: () {
             if (!isOpen) {
               _animationController.forward();
@@ -156,10 +170,10 @@ class RANState extends State<RotaryAnimatedNavigator>
             }
             isOpen = !isOpen;
           },
-          backgroundColor: AppColors.Primary,
+          backgroundColor: ThemeColorProvider.of(context).appColors.primary,
           child: new AnimatedIcon(icon: AnimatedIcons.menu_close,
             progress: _animation,
-            color: AppColors.Secondary,),
+            color: ThemeColorProvider.of(context).appColors.secondary,),
         ),
       ),
     );
@@ -168,7 +182,7 @@ class RANState extends State<RotaryAnimatedNavigator>
   /**
    * The animation of the round semi opace background
    */
-  Widget getTheRoundAnimatedThing(){
+  Widget getTheRoundAnimatedThing() {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Container(
