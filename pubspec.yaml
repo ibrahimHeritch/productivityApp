@@ -4,7 +4,8 @@ description: A app to meassure your productivity
 dependencies:
   flutter:
     sdk: flutter
-
+  #google_sign_in: any
+  #firebase_auth: any
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2

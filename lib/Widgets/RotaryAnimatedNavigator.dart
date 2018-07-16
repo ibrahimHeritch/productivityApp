@@ -13,7 +13,6 @@ class RotaryAnimatedMenu extends StatefulWidget {
   State<StatefulWidget> createState() {
     return new RANState();
   }
-
 }
 
 class RANState extends State<RotaryAnimatedMenu>
@@ -25,34 +24,29 @@ class RANState extends State<RotaryAnimatedMenu>
 
   @override
   void initState() {
-    _colorAnimation=Map();
-    _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 250));
+    _colorAnimation = Map();
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 250));
     _animation =
-    CurvedAnimation(parent: _animationController, curve: Curves.easeIn)
-      ..addListener(() {
-        setState(() {});
-      });//TODO add drak themes
-    _colorAnimation[UIColorSchemes.dark] = ColorTween(
-        begin:Colors.black,
-        end: Colors.black.withOpacity(0.5))
-        .animate(_animationController);
-    _colorAnimation[UIColorSchemes.orange] = ColorTween(
-        begin: Colors.orange,
-        end: Colors.orange.withOpacity(0.5))
-        .animate(_animationController);
-    _colorAnimation[UIColorSchemes.green] = ColorTween(
-        begin: Colors.green,
-        end: Colors.green.withOpacity(0.5))
-        .animate(_animationController);
-    _colorAnimation[UIColorSchemes.blue] = ColorTween(
-        begin:Colors.blue,
-        end: Colors.blue.withOpacity(0.5))
-        .animate(_animationController);
-    _colorAnimation[UIColorSchemes.red] = ColorTween(
-        begin: Colors.red,
-        end: Colors.red.withOpacity(0.5))
-        .animate(_animationController);
+        CurvedAnimation(parent: _animationController, curve: Curves.easeIn)
+          ..addListener(() {
+            setState(() {});
+          }); //TODO add drak themes
+    _colorAnimation[UIColorSchemes.dark] =
+        ColorTween(begin: Colors.black, end: Colors.black.withOpacity(0.5))
+            .animate(_animationController);
+    _colorAnimation[UIColorSchemes.orange] =
+        ColorTween(begin: Colors.orange, end: Colors.orange.withOpacity(0.5))
+            .animate(_animationController);
+    _colorAnimation[UIColorSchemes.green] =
+        ColorTween(begin: Colors.green, end: Colors.green.withOpacity(0.5))
+            .animate(_animationController);
+    _colorAnimation[UIColorSchemes.blue] =
+        ColorTween(begin: Colors.blue, end: Colors.blue.withOpacity(0.5))
+            .animate(_animationController);
+    _colorAnimation[UIColorSchemes.red] =
+        ColorTween(begin: Colors.red, end: Colors.red.withOpacity(0.5))
+            .animate(_animationController);
 
     isOpen = false;
     super.initState();
@@ -69,17 +63,16 @@ class RANState extends State<RotaryAnimatedMenu>
           settings button
          */
         Positioned(
-            bottom: 17.0 + (_animation.value * 65), /*+65*/
+            bottom: 17.0 + (_animation.value * 65),
+            /*+65*/
             height: 54.0,
             width: 54.0,
             child: FractionalTranslation(
               translation: Offset(-1.2, 0.0),
               child: FloatingActionButton(
                 heroTag: null,
-                backgroundColor: ThemeColorProvider
-                    .of(context)
-                    .appColors
-                    .primary,
+                backgroundColor:
+                    ThemeColorProvider.of(context).appColors.primary,
                 onPressed: () {
                   close();
                   Navigator.push(
@@ -87,61 +80,54 @@ class RANState extends State<RotaryAnimatedMenu>
                     MaterialPageRoute(builder: (context) => Settings()),
                   );
                 },
-                child: new Icon(Icons.settings, color: ThemeColorProvider
-                    .of(context)
-                    .appColors
-                    .secondary,),
+                child: new Icon(
+                  Icons.settings,
+                  color: ThemeColorProvider.of(context).appColors.secondary,
+                ),
               ),
-            )
-        ),
+            )),
         /*
            Statistics button
          */
         Positioned(
-            bottom: 17.0 + (_animation.value * 65), /*+65*/
+            bottom: 17.0 + (_animation.value * 65),
+            /*+65*/
             height: 54.0,
             width: 54.0,
             child: FractionalTranslation(
               translation: Offset(1.2, 0.0),
               child: FloatingActionButton(
                 heroTag: null,
-                backgroundColor: ThemeColorProvider
-                    .of(context)
-                    .appColors
-                    .primary,
+                backgroundColor:
+                    ThemeColorProvider.of(context).appColors.primary,
                 onPressed: () {},
-                child: new Icon(Icons.trending_up,
-                  color: ThemeColorProvider
-                      .of(context)
-                      .appColors
-                      .secondary,),
+                child: new Icon(
+                  Icons.trending_up,
+                  color: ThemeColorProvider.of(context).appColors.secondary,
+                ),
               ),
-            )
-        ),
+            )),
         /*
           add button
          */
         Positioned(
-            bottom: 17.0 + (_animation.value * 65), /*+65*/
+            bottom: 17.0 + (_animation.value * 65),
+            /*+65*/
             height: 54.0,
             width: 54.0,
             child: FractionalTranslation(
               translation: Offset(0.7, -1.2),
               child: FloatingActionButton(
                 heroTag: null,
-                backgroundColor: ThemeColorProvider
-                    .of(context)
-                    .appColors
-                    .primary,
+                backgroundColor:
+                    ThemeColorProvider.of(context).appColors.primary,
                 onPressed: () {},
-                child: new Icon(Icons.add,
-                  color: ThemeColorProvider
-                      .of(context)
-                      .appColors
-                      .secondary,),
+                child: new Icon(
+                  Icons.add,
+                  color: ThemeColorProvider.of(context).appColors.secondary,
+                ),
               ),
-            )
-        ),
+            )),
         /*
            search button
          */
@@ -153,22 +139,15 @@ class RANState extends State<RotaryAnimatedMenu>
               translation: Offset(-0.7, -1.2),
               child: FloatingActionButton(
                 heroTag: null,
-                backgroundColor: ThemeColorProvider
-                    .of(context)
-                    .appColors
-                    .primary,
+                backgroundColor:
+                    ThemeColorProvider.of(context).appColors.primary,
                 onPressed: () {},
                 child: new Icon(
                   Icons.search,
-                  color: ThemeColorProvider
-                      .of(context)
-                      .appColors
-                      .secondary,
+                  color: ThemeColorProvider.of(context).appColors.secondary,
                 ),
-
               ),
-            )
-        ),
+            )),
       ];
     } else {
       children = [
@@ -196,7 +175,8 @@ class RANState extends State<RotaryAnimatedMenu>
    */
   Widget getCentralFloatingButton() {
     return Positioned(
-      bottom: 20.0 + (_animation.value * 66), /*+65*/
+      bottom: 20.0 + (_animation.value * 66),
+      /*+65*/
       height: 65.0,
       width: 65.0,
       child: Padding(
@@ -210,16 +190,12 @@ class RANState extends State<RotaryAnimatedMenu>
               close();
             }
           },
-          backgroundColor: ThemeColorProvider
-              .of(context)
-              .appColors
-              .primary,
-          child: new AnimatedIcon(icon: AnimatedIcons.menu_close,
+          backgroundColor: ThemeColorProvider.of(context).appColors.primary,
+          child: new AnimatedIcon(
+            icon: AnimatedIcons.menu_close,
             progress: _animation,
-            color: ThemeColorProvider
-                .of(context)
-                .appColors
-                .secondary,),
+            color: ThemeColorProvider.of(context).appColors.secondary,
+          ),
         ),
       ),
     );
@@ -236,7 +212,10 @@ class RANState extends State<RotaryAnimatedMenu>
         width: 65.0 + (2 * _animation.value * 66),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: _colorAnimation[ThemeColorProvider.of(context).appColors.currentTheme].value,),
+          color: _colorAnimation[
+                  ThemeColorProvider.of(context).appColors.currentTheme]
+              .value,
+        ),
       ),
     );
   }

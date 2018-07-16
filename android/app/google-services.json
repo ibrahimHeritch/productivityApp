@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "793023230699",
+    "firebase_url": "https://productivitymetrics-e2d3f.firebaseio.com",
+    "project_id": "productivitymetrics-e2d3f",
+    "storage_bucket": "productivitymetrics-e2d3f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793023230699:android:94e56215db19caba",
+        "android_client_info": {
+          "package_name": "com.ibrahimheritch.productivitymetrics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "793023230699-ck3rpg104oq17j331to0n7b6429kdgid.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ibrahimheritch.productivitymetrics",
+            "certificate_hash": "c3321e7921ce065adc56c024154c08eea026be0c"
+          }
+        },
+        {
+          "client_id": "793023230699-1hfhbgfafivimn64epi0q7tais7mvg00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCm_SkH5K4i8DLVWWA_koODdB3NQayAnxc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793023230699-1hfhbgfafivimn64epi0q7tais7mvg00.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

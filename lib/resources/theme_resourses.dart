@@ -11,7 +11,6 @@ then use the appTheme setter to set theme during runtime
 final GlobalKey _themeGlobalKey = new GlobalKey();
 
 class AppColorTheme extends StatefulWidget {
-
   final Widget child;
 
   AppColorTheme({
@@ -23,18 +22,15 @@ class AppColorTheme extends StatefulWidget {
 }
 
 class AppThemeState extends State<AppColorTheme> {
-
   ThemeData _theme = ThemeData(primarySwatch: Colors.orange);
 
   set theme(ThemeData value) {
     setState(() {
       _theme = value;
     });
-
-
   }
 
-  AppColors _appColors=AppColors();
+  AppColors _appColors = AppColors();
 
   ThemeData get theme => _theme;
 
@@ -43,7 +39,7 @@ class AppThemeState extends State<AppColorTheme> {
     return new ThemeColorProvider(
       appThemeKey: _themeGlobalKey,
       theme: _theme,
-      appColors:_appColors,
+      appColors: _appColors,
       child: new Theme(
         data: _theme,
         child: widget.child,
@@ -53,100 +49,92 @@ class AppThemeState extends State<AppColorTheme> {
 }
 
 class ThemeColorProvider extends InheritedWidget {
-
-
   static ThemeColorProvider of(BuildContext context) {
     return context.inheritFromWidgetOfExactType(ThemeColorProvider);
   }
+
   final AppColors appColors;
   final ThemeData theme;
   final GlobalKey _appThemeKey;
 
-  ThemeColorProvider({
-    this.appColors,
-    appThemeKey,
-    this.theme,
-    child
-  }) : _appThemeKey = appThemeKey, super(child: child);
+  ThemeColorProvider({this.appColors, appThemeKey, this.theme, child})
+      : _appThemeKey = appThemeKey,
+        super(child: child);
 //magic happens here
   set appTheme(UIColorSchemes theme) {
-
     switch (theme) {
       case UIColorSchemes.dark:
         (_appThemeKey.currentState as AppThemeState)?.theme = ThemeData.dark();
         break;
       case UIColorSchemes.green:
-        (_appThemeKey.currentState as AppThemeState)?.theme = ThemeData(primarySwatch: Colors.green);
+        (_appThemeKey.currentState as AppThemeState)?.theme =
+            ThemeData(primarySwatch: Colors.green);
         break;
       case UIColorSchemes.blue:
-        (_appThemeKey.currentState as AppThemeState)?.theme = ThemeData(primarySwatch: Colors.blue);
+        (_appThemeKey.currentState as AppThemeState)?.theme =
+            ThemeData(primarySwatch: Colors.blue);
         break;
       case UIColorSchemes.red:
-        (_appThemeKey.currentState as AppThemeState)?.theme = ThemeData(primarySwatch: Colors.red);
+        (_appThemeKey.currentState as AppThemeState)?.theme =
+            ThemeData(primarySwatch: Colors.red);
         break;
       default:
-        (_appThemeKey.currentState as AppThemeState)?.theme = ThemeData(primarySwatch: Colors.orange);
+        (_appThemeKey.currentState as AppThemeState)?.theme =
+            ThemeData(primarySwatch: Colors.orange);
         break;
     }
   }
 
   @override
   bool updateShouldNotify(ThemeColorProvider old) {
-    return old.theme!=theme||
-        old.appColors.primary!=appColors.primary||
-        old.appColors.secondary!=appColors.secondary;
+    return old.theme != theme ||
+        old.appColors.primary != appColors.primary ||
+        old.appColors.secondary != appColors.secondary;
   }
-
 }
-class AppColors{
+
+class AppColors {
   //used for text icons
-  Color _secondary=Colors.white;
+  Color _secondary = Colors.white;
   Color get secondary => _secondary;
 
-   //used for button backgrounds
-  Color _primary=Colors.orange;
+  //used for button backgrounds
+  Color _primary = Colors.orange;
   Color get primary => _primary;
 
   //used for the background of the rotary Navigator
-  Color _primaryOpace=Colors.orange.withOpacity(0.5);
+  Color _primaryOpace = Colors.orange.withOpacity(0.5);
   Color get primaryOpace => _primaryOpace;
 
-  UIColorSchemes currentTheme=UIColorSchemes.orange;
+  UIColorSchemes currentTheme = UIColorSchemes.orange;
 
-  initalizeColors({@required UIColorSchemes scheme=UIColorSchemes.orange}){
-    currentTheme=scheme;
-    if(scheme==UIColorSchemes.orange){
-      _primaryOpace=Colors.orange.withOpacity(0.4);
-      _primary=Colors.orange;
-      _secondary=Colors.white;
-    }else if(scheme==UIColorSchemes.dark){
-      _primaryOpace=Color.fromRGBO(Colors.black.red,Colors.black.green,Colors.black.blue, 0.4);
-      _primary=Colors.black87;
-      _secondary=Colors.orange;
-    }else if(scheme==UIColorSchemes.blue){
-      _primaryOpace=Color.fromRGBO(Colors.blue.red,Colors.blue.green,Colors.blue.blue, 0.4);
-      _primary=Colors.blue;
-      _secondary=Colors.white;
-    }else if(scheme==UIColorSchemes.green){
-      _primaryOpace=Color.fromRGBO(Colors.green.red,Colors.green.green,Colors.green.blue, 0.4);//TODO fix this embarassment
-      _primary=Colors.green;
-      _secondary=Colors.white;
-    }else if(scheme==UIColorSchemes.red){
-      _primaryOpace=Colors.red.withOpacity(0.4);//TODO fix this embarassment
-      _primary=Colors.red;
-      _secondary=Colors.white;
+  initalizeColors({@required UIColorSchemes scheme = UIColorSchemes.orange}) {
+    currentTheme = scheme;
+    if (scheme == UIColorSchemes.orange) {
+      _primaryOpace = Colors.orange.withOpacity(0.4);
+      _primary = Colors.orange;
+      _secondary = Colors.white;
+    } else if (scheme == UIColorSchemes.dark) {
+      _primaryOpace = Color.fromRGBO(
+          Colors.black.red, Colors.black.green, Colors.black.blue, 0.4);
+      _primary = Colors.black87;
+      _secondary = Colors.orange;
+    } else if (scheme == UIColorSchemes.blue) {
+      _primaryOpace = Color.fromRGBO(
+          Colors.blue.red, Colors.blue.green, Colors.blue.blue, 0.4);
+      _primary = Colors.blue;
+      _secondary = Colors.white;
+    } else if (scheme == UIColorSchemes.green) {
+      _primaryOpace = Color.fromRGBO(Colors.green.red, Colors.green.green,
+          Colors.green.blue, 0.4); //TODO fix this embarassment
+      _primary = Colors.green;
+      _secondary = Colors.white;
+    } else if (scheme == UIColorSchemes.red) {
+      _primaryOpace = Colors.red.withOpacity(0.4);
+      _primary = Colors.red;
+      _secondary = Colors.white;
     }
-
   }
-
-
-
-
 }
-enum UIColorSchemes{
-  orange,
-  dark,
-  blue,
-  green,
-  red
-}
+
+enum UIColorSchemes { orange, dark, blue, green, red }
