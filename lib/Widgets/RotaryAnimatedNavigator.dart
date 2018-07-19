@@ -33,19 +33,19 @@ class RANState extends State<RotaryAnimatedMenu>
             setState(() {});
           }); //TODO add drak themes
     _colorAnimation[UIColorSchemes.dark] =
-        ColorTween(begin: Colors.black, end: Colors.black.withOpacity(0.5))
+        ColorTween(begin: Colors.black, end: Colors.black.withOpacity(0.4))
             .animate(_animationController);
     _colorAnimation[UIColorSchemes.orange] =
-        ColorTween(begin: Colors.orange, end: Colors.orange.withOpacity(0.5))
+        ColorTween(begin: Colors.orange, end: Colors.orange.withOpacity(0.4))
             .animate(_animationController);
     _colorAnimation[UIColorSchemes.green] =
-        ColorTween(begin: Colors.green, end: Colors.green.withOpacity(0.5))
+        ColorTween(begin: Colors.green, end: Colors.green.withOpacity(0.4))
             .animate(_animationController);
     _colorAnimation[UIColorSchemes.blue] =
-        ColorTween(begin: Colors.blue, end: Colors.blue.withOpacity(0.5))
+        ColorTween(begin: Colors.blue, end: Colors.blue.withOpacity(0.4))
             .animate(_animationController);
     _colorAnimation[UIColorSchemes.red] =
-        ColorTween(begin: Colors.red, end: Colors.red.withOpacity(0.5))
+        ColorTween(begin: Colors.red, end: Colors.red.withOpacity(0.4))
             .animate(_animationController);
 
     isOpen = false;
@@ -155,12 +155,23 @@ class RANState extends State<RotaryAnimatedMenu>
         getCentralFloatingButton(),
       ];
     }
-    return Positioned(
-      bottom: 0.0 - (_animation.value * 65),
-      child: Stack(
-        alignment: Alignment.center,
-        children: children,
-      ),
+    return Stack(
+      children: <Widget>[
+        Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: GestureDetector(
+              onTap: close,
+
+            )),
+        Positioned(
+            bottom: 20.0 - (_animation.value * 65),
+            right: 10.0- (_animation.value * 65),
+            child: Stack(
+              alignment: Alignment.center,
+              children: children,
+            )),
+      ],
     );
   }
 
@@ -175,13 +186,10 @@ class RANState extends State<RotaryAnimatedMenu>
    */
   Widget getCentralFloatingButton() {
     return Positioned(
-      bottom: 20.0 + (_animation.value * 66),
-      /*+65*/
+      bottom: 0.0 + (_animation.value * 66),
       height: 65.0,
       width: 65.0,
-      child: Padding(
-        padding: const EdgeInsets.all(0.0),
-        child: FloatingActionButton(
+      child: FloatingActionButton(
           heroTag: null,
           onPressed: () {
             if (!isOpen) {
@@ -197,7 +205,6 @@ class RANState extends State<RotaryAnimatedMenu>
             color: ThemeColorProvider.of(context).appColors.secondary,
           ),
         ),
-      ),
     );
   }
 
@@ -205,19 +212,16 @@ class RANState extends State<RotaryAnimatedMenu>
    * The animation of the round semi opace background
    */
   Widget getTheRoundAnimatedThing() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Container(
+    return Container(
         height: 65.0 + (2 * _animation.value * 66),
         width: 65.0 + (2 * _animation.value * 66),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: _colorAnimation[
-                  ThemeColorProvider.of(context).appColors.currentTheme]
+                  UIColorSchemes.red]//ThemeColorProvider.of(context).appColors.currentTheme]
               .value,
         ),
-      ),
-    );
+      );
   }
 
   void close() {

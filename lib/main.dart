@@ -3,11 +3,14 @@ import 'dart:async';
 //import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:flutter/material.dart';
-import 'package:productivity_metrics/Widgets/TodaysTasks.dart';
+import 'package:productivity_metrics/DataModels/user.dart';
+import 'package:productivity_metrics/Widgets/log_in.dart';
 
 import 'package:productivity_metrics/resources/theme_resourses.dart';
 
-final GlobalKey appTheme = GlobalKey();
+
+
+final User user= new User();
 
 void main() => runApp(new RootWidget());
 
@@ -25,7 +28,7 @@ class ProductivityMetricsApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Productivity Metrics",
-      home: new TodaysTasks(),
+      home:new LoginScreen(),// new TodaysTasks(),
       theme: ThemeColorProvider.of(context).theme,
     );
   }

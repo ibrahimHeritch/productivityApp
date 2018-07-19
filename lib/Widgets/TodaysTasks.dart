@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:productivity_metrics/Widgets/ListTaskWidget.dart';
 import 'package:productivity_metrics/Widgets/RotaryAnimatedNavigator.dart';
-import 'package:productivity_metrics/Widgets/Settings.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
 
 class TodaysTasks extends StatefulWidget {
@@ -40,6 +39,8 @@ class _TodaysTasksState extends State<TodaysTasks> {
     _taskCount=0;
     return new Scaffold(
       appBar: new AppBar(
+        //backgroundColor: Colors.orange,
+
         title: new Text("Priductivity Metrics",
             style: TextStyle(
               color: ThemeColorProvider.of(context).appColors.secondary,
