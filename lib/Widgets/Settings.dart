@@ -16,7 +16,9 @@ class Settings extends StatelessWidget {
           "Settings",
           style: TextStyle(
               color: ThemeColorProvider.of(context).appColors.secondary),
+
         ),
+        backgroundColor:  ThemeColorProvider.of(context).appColors.primary,
       ),
       body: ListView(
           children: <Widget>[
@@ -135,6 +137,7 @@ class Settings extends StatelessWidget {
                       style: TextStyle(fontSize: 20.0),
                     ),
                     RaisedButton(
+                      color: ThemeColorProvider.of(context).appColors.primary,
                       child: new Text("Log out"),
                       shape: RoundedRectangleBorder(
                           borderRadius:

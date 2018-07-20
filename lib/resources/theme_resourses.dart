@@ -99,7 +99,7 @@ class AppColors {
   Color get secondary => _secondary;
 
   //used for button backgrounds
-  Color _primary = Colors.orange;
+  Color _primary = Color.fromRGBO(237,112 , 58, 0.9);
   Color get primary => _primary;
 
   //used for the background of the rotary Navigator
