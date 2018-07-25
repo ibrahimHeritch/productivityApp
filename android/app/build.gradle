@@ -1,3 +1,5 @@
+import jdk.internal.dynalink.linker.LinkerServices
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -45,7 +47,7 @@ flutter {
 }
 
 dependencies {
-    compile 'com.google.firebase:firebase-core:15.0.2'
+    implementation 'com.google.firebase:firebase-core:15.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'

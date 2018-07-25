@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
+///screen to display while loading data
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({Key key}) : super(key: key);
 

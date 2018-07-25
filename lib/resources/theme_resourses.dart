@@ -94,15 +94,15 @@ class ThemeColorProvider extends InheritedWidget {
 }
 
 class AppColors {
-  //used for text icons
+  ///used for text icons
   Color _secondary = Colors.white;
   Color get secondary => _secondary;
 
-  //used for button backgrounds
+  ///used for button backgrounds
   Color _primary = Color.fromRGBO(237,112 , 58, 0.9);
   Color get primary => _primary;
 
-  //used for the background of the rotary Navigator
+  ///used for the background of the rotary Navigator
   Color _primaryOpace = Colors.orange.withOpacity(0.5);
   Color get primaryOpace => _primaryOpace;
 

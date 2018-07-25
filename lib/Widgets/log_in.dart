@@ -3,11 +3,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:productivity_metrics/DataModels/user.dart';
 import 'package:productivity_metrics/Widgets/TodaysTasks.dart';
 import 'package:productivity_metrics/Widgets/loading_screen.dart';
 import 'package:productivity_metrics/main.dart';
 
+
+ /// Class name says it all
+ /// works with google signin
+ /// logic implemented in the user class
+//TODO verification + login with email + create account + forgot password
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
 
@@ -16,9 +20,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
+  ///key for the main form used when validationg
   final GlobalKey<FormState> formKey = new GlobalKey<FormState>();
+  ///key for scaffold used to display snach bars
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  ///Shows snack bar on the main login screen
   void showInSnackBar(String value) {
     _scaffoldKey.currentState
         .showSnackBar(new SnackBar(content: new Text(value)));
@@ -29,23 +36,24 @@ class LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       key: _scaffoldKey,
       body: SingleChildScrollView(
-        child: Container(
-
-            height: MediaQuery.of(context).size.height,
+        child: Container(//background picture
+          height: MediaQuery.of(context).size.height,//TODO FIX this
           width: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: ExactAssetImage("assets/backgroundLogin.jpg"),
                   fit: BoxFit.cover)),
           child: Container(
-            color: Colors.orangeAccent.withOpacity(0.4),
+            color: Colors.orangeAccent.withOpacity(0.4),//cover over picture
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Center(
-                    child:Text("LOGO",style: Theme.of(context).textTheme.title,)
-                  ),
+                      child: Text(
+                    "LOGO",
+                    style: Theme.of(context).textTheme.title,
+                  )),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -65,7 +73,7 @@ class LoginScreenState extends State<LoginScreen> {
                                   icon: Icon(Icons.email),
                                 ),
                                 obscureText: false,
-                                validator: (String) => "test",
+                                validator: (string) => "test",
                               ),
                             ),
                             Padding(
@@ -76,7 +84,7 @@ class LoginScreenState extends State<LoginScreen> {
                                   icon: Icon(Icons.lock),
                                 ),
                                 obscureText: true,
-                                validator: (String) => "test",
+                                validator: (string) => "test",
                               ),
                             ),
                             Row(
@@ -89,7 +97,7 @@ class LoginScreenState extends State<LoginScreen> {
                                         borderRadius:
                                             new BorderRadius.circular(30.0)),
                                     child: Text("Login"),
-                                    onPressed: _handleSubmitted,
+                                    onPressed: _emailLogin,
                                   ),
                                 ),
                                 Padding(
@@ -98,7 +106,7 @@ class LoginScreenState extends State<LoginScreen> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             new BorderRadius.circular(30.0)),
-                                    child: Text("Login With Google"),
+                                    child: Text("Login With Google"),//todo add google icon
                                     onPressed: _googleLogin,
                                   ),
                                 ),
@@ -142,7 +150,7 @@ class LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _handleSubmitted() {
+  void _emailLogin() {
     final FormState form = formKey.currentState;
     if (!form.validate()) {
       showInSnackBar('Please fix the errors in red before submitting.');
@@ -160,15 +168,30 @@ class LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _googleLogin() {
+ /// handle login using google
+
+  void _googleLogin() async {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => new LoadingScreen()));
-    user.signInGoogle().then((onValue) {
-      Navigator.pop(context);
-      Navigator.pushReplacement(
+
+    try {
+      //try to login silently
+      await user.signInGoogleSilently();
+    } catch (e) {
+      try {
+        //try login non-silently
+        await user.signInGoogle();
+      } catch (e) {
+        print("error");//TODO handle error
+      }
+    }
+
+    if (user.isLoggedin()) {
+      Navigator.pop(context);//pop loading screen
+      Navigator.pushReplacement(//go to home
           context, MaterialPageRoute(builder: (context) => new TodaysTasks()));
-    }).catchError((PlatformException onError) {
-      showInSnackBar(onError.message);
-    });
+    } else {
+      Navigator.pop(context);
+    }
   }
 }

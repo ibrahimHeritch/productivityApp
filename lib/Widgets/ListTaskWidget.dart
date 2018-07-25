@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:productivity_metrics/DataModels/task.dart';
+import 'package:productivity_metrics/Widgets/TodaysTasks.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
 
 //TODO better constructors
@@ -9,11 +11,13 @@ class ListTaskWidget extends StatefulWidget {
 
   String _title;
 
-  ListTaskWidget(this._onClickCompleted, this._onClickDeleted,this._taskCount,this._title):super(key:ObjectKey(_title));
+  Task task;
+
+  ListTaskWidget(this.task,this._onClickCompleted, this._onClickDeleted,this._taskCount,this._title):super(key:ObjectKey(_title));
 
   @override
   State<StatefulWidget> createState() {
-    return new ListTaskWidgetState(_onClickCompleted, _onClickDeleted,_taskCount,_title);
+    return new ListTaskWidgetState(task,_onClickCompleted, _onClickDeleted,_taskCount,_title);
   }
 }
 
@@ -27,7 +31,8 @@ class ListTaskWidgetState extends State<ListTaskWidget>
   bool get isOpen => _isOpen;
   int _taskCount;
   String _title;
-  ListTaskWidgetState(this._onClickCompleted, this._onClickDeleted,this._taskCount,this._title):super();
+  Task task;
+  ListTaskWidgetState(this.task,this._onClickCompleted, this._onClickDeleted,this._taskCount,this._title):super();
 
   @override
   void initState() {
