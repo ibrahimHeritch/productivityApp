@@ -22,7 +22,7 @@ class Task{
 
   String get description => _description;
 
-  Task(this._taskTitle, this._index, this._id);
+  Task(this._taskTitle, this._index, this._id, this._isComplete);
 
 
 }

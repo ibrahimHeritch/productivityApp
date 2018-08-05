@@ -5,7 +5,10 @@ import 'package:productivity_metrics/DataModels/task.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
 import 'package:productivity_metrics/Widgets/ListTaskWidget.dart';
 import 'package:productivity_metrics/Widgets/Settings.dart';
+import 'package:productivity_metrics/Widgets/add_task_dialog.dart';
+import 'package:productivity_metrics/Widgets/completed_task_list_widget.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
+
 ///the main homepage that displays todays taskes
 class TodaysTasks extends StatefulWidget {
   @override
@@ -15,123 +18,145 @@ class TodaysTasks extends StatefulWidget {
 }
 
 class _TodaysTasksState extends State<TodaysTasks> {
-
+  DateTime dt = DateTime.now();
+  GlobalKey dialog= GlobalKey();
 
   @override
   void initState() {
-   super.initState();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new AppBar(
-
-          backgroundColor:ThemeColorProvider.of(context).appColors.primary,
-
-          title: new Text("Productivity Metrics",
-              style: TextStyle(
+      appBar: new AppBar(
+        backgroundColor: ThemeColorProvider.of(context).appColors.primary,
+        title: new Text("Productivity Metrics",
+            style: TextStyle(
+              color: ThemeColorProvider.of(context).appColors.secondary,
+            )),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(
+                Icons.settings,
                 color: ThemeColorProvider.of(context).appColors.secondary,
-              )),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.settings,color: ThemeColorProvider.of(context).appColors.secondary,),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return SettingsScreen();
-                  }));
-                }),
-            IconButton(icon: Icon(Icons.add), onPressed: () {
-              final myController = TextEditingController();
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  // return object of type Dialog
-                  return AlertDialog(
-                    title: new Text("Alert Dialog title"),
-                    content: TextFormField(controller: myController,),
-                    actions: <Widget>[
-                      // usually buttons at the bottom of the dialog
-                      new FlatButton(
-                        child: new Text("Close"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-
-                      new FlatButton(
-                        child: new Text("Add Task"),
-                        onPressed: () {
-                          if(myController.text!=null){
-                            String text=myController.text;
-                            myController.clear();
-                            Firestore.instance.runTransaction((Transaction t) async{
-                              Firestore.instance.collection("users/${User.instance().user.uid}/Tasks").add({"text":text});
-                            });
-                          }
-
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            },color: ThemeColorProvider.of(context).appColors.secondary,)
-          ],
-        ),
-        body: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            StreamBuilder(
-
-              stream: Firestore.instance.collection("users/${User.instance().user.uid}/Tasks").snapshots(),
-              builder: (context, snapshot){
-                if(!snapshot.hasData){
+              ),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return SettingsScreen();
+                }));
+              }),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              _showAddTaskDialog();
+            },
+            color: ThemeColorProvider.of(context).appColors.secondary,
+          )
+        ],
+      ),
+      body: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          StreamBuilder(
+              stream: Firestore.instance
+                  .collection("users/${User.getInstance().user.uid}/Tasks").orderBy("dueDate").orderBy("isComplete",descending: false)
+                  .where("dueDate",
+                      isGreaterThanOrEqualTo:
+                          DateTime(dt.year, dt.month, dt.day),
+                      isLessThan: DateTime(dt.year, dt.month, dt.day)
+                          .add(Duration(days: 1)))
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
                   return const Text('Loading...');
-                }else{
+                } else {
                   return ListView.builder(
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) {
                         DocumentSnapshot ds = snapshot.data.documents[index];
-                        return _buildTaskWidget(ds["text"],index,ds.documentID);
-                      }
-                  );
+                        return _buildTaskWidget(
+                            ds["text"], index, ds.documentID,ds["isComplete"]);
+                      });
                 }
+              }),
+        ],
+      ),
+    );
+  }
 
-              }
+  ///remove a task
+  void remove(Task task) {
+    DocumentReference dr = Firestore.instance
+        .document("users/${User.getInstance().user.uid}/Tasks/${task.id}");
+    dr.delete();
+  }
 
+  ///builder for list view
+  Widget _buildTaskWidget(String task, int index, String id, bool isComplete) {
+    Task t = Task(task, index, id,isComplete);
+    if(isComplete){
+      return ListCompletedTaskWidget(t);
+    }else{
+      return ListPendingTaskWidget(t, () {
+        print("completed");
+        complete(t);
+      }, () {
+        print("deleted");
+        remove(t);
+      });
+    }
+
+  }
+
+  void _showAddTaskDialog() {
+    final titleController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Add Task"),
+          content: AddTaskDialog(dialog)
+            ..descriptionController = TextEditingController()
+            ..titleController = titleController,
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Add Task"),
+              onPressed: _addTask,
+            ),
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
           ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.trending_up),
-              title: Text("Stats"),
-            ),
-            BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home"),),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.search), title: Text("Search")),
-          ],
-          currentIndex: 1,
-        ),
-      );
+        );
+      },
+    );
   }
-///remove a task
-  void remove(Task task) async{
-      DocumentReference dr= await Firestore.instance.document("users/${User.instance().user.uid}/Tasks/${task.id}");
-      dr.delete();
+  void _addTask(){
+    AddTaskDialog ad=dialog.currentWidget;
+    if (ad.titleController.text != null && ad.titleController.text != "") {
+      String text = ad.titleController.text;
+      String description= ad.descriptionController.text;
+      ad.titleController.clear();
+      ad.descriptionController.clear();
+      String id=DateTime.now().millisecondsSinceEpoch.toString();//todo prevent duplicates
+      Firestore.instance.runTransaction((Transaction t) async {
+        print("this is called");
+        Firestore.instance
+            .document("users/${User.getInstance().user.uid}/Tasks/"+id)
+            .setData({"text": text, "dueDate": ad.dt.time, "description": description,"isComplete":false,"searchValue":text.replaceAll(" ", "").toLowerCase()});
+      });
+    }
+    Navigator.of(context).pop();
   }
-///builder for list view
-  Widget _buildTaskWidget(String task, int index,String id) {
-    Task t=Task(task,index,id);
-    return ListTaskWidget(
-      t, () {
-      print("completed");
-    }, () {
-      print("deleted");
-      remove(t);
-    }, index+1, task);
+
+  void complete(Task t) {
+    DocumentReference dr = Firestore.instance
+        .document("users/${User.getInstance().user.uid}/Tasks/${t.id}");
+    dr.updateData({"isComplete":true});
+
   }
 }

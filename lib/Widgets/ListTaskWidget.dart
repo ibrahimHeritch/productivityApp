@@ -1,38 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:productivity_metrics/DataModels/task.dart';
-import 'package:productivity_metrics/Widgets/TodaysTasks.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
+//TODO document this
+class ListPendingTaskWidget extends StatefulWidget {
+  final void Function() _onClickCompleted;
+  final void Function() _onClickDeleted;
 
-//TODO better constructors
-class ListTaskWidget extends StatefulWidget {
-  void Function() _onClickCompleted;
-  void Function() _onClickDeleted;
-  int _taskCount;
+  final Task task;
 
-  String _title;
-
-  Task task;
-
-  ListTaskWidget(this.task,this._onClickCompleted, this._onClickDeleted,this._taskCount,this._title):super(key:ObjectKey(_title));
+  ListPendingTaskWidget(this.task,this._onClickCompleted, this._onClickDeleted):super(key:ObjectKey(task.id));
 
   @override
   State<StatefulWidget> createState() {
-    return new ListTaskWidgetState(task,_onClickCompleted, _onClickDeleted,_taskCount,_title);
+    return new ListPendingTaskWidgetState(task,_onClickCompleted, _onClickDeleted);
   }
 }
 
-class ListTaskWidgetState extends State<ListTaskWidget>
+class ListPendingTaskWidgetState extends State<ListPendingTaskWidget>
     with SingleTickerProviderStateMixin {
   AnimationController _animationCont;
   Animation<double> _animation;
   bool _isOpen;
-  void Function() _onClickCompleted;
+  void Function() _onClickCompleted;//todo
   void Function() _onClickDeleted;
   bool get isOpen => _isOpen;
-  int _taskCount;
-  String _title;
   Task task;
-  ListTaskWidgetState(this.task,this._onClickCompleted, this._onClickDeleted,this._taskCount,this._title):super();
+  final double _height=80.0;
+
+  ListPendingTaskWidgetState(this.task,this._onClickCompleted, this._onClickDeleted):super();
 
   @override
   void initState() {
@@ -53,14 +48,14 @@ class ListTaskWidgetState extends State<ListTaskWidget>
     super.dispose();
   }
 
-  void Open() {
+  void open() {
     if (!_isOpen) {
       _animationCont.forward();
       _isOpen = true;
     }
   }
 
-  void Close() {
+  void close() {
     if (_isOpen) {
       _animationCont.reverse();
       _isOpen = false;
@@ -78,9 +73,9 @@ class ListTaskWidgetState extends State<ListTaskWidget>
             InkWell(
               onTap: () {
                 if (!_isOpen) {
-                  Open();
+                  open();
                 } else {
-                  Close();
+                  close();
                 }
               },
               child: Row(
@@ -90,7 +85,7 @@ class ListTaskWidgetState extends State<ListTaskWidget>
                     width: 80.0 +
                         (_animation.value *
                             (MediaQuery.of(context).size.width - 80)),
-                    height: 69.0,
+                    height: _height-1,
                     color: Colors.grey.withOpacity(0.3),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -149,10 +144,10 @@ class ListTaskWidgetState extends State<ListTaskWidget>
 
                           Container(
                             width: 80.0,
-                            height: 69.0,
+                            height: _height-1,
                             child: Center(
                                 child: Text(
-                              "${_taskCount}",
+                              "${task.index+1}",
                               style: Theme.of(context).textTheme.display2,
                             )),
                           ),
@@ -160,7 +155,7 @@ class ListTaskWidgetState extends State<ListTaskWidget>
                   ),
                   Expanded(
                     child: Container(
-                      height: 70.0,
+                      height: _height,
                       child: Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 10.0),
                           child: Column(
@@ -169,7 +164,7 @@ class ListTaskWidgetState extends State<ListTaskWidget>
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text("${_title}",
+                                child: Text("${task.taskTitle}",
                                     maxLines: 1,
                                     style: Theme.of(context).textTheme.title),
                               ),
