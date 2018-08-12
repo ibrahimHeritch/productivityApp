@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:productivity_metrics/DataModels/task.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
-import 'package:productivity_metrics/Widgets/ListTaskWidget.dart';
+import 'package:productivity_metrics/Widgets/pending_task_list_widget.dart';
 import 'package:productivity_metrics/Widgets/completed_task_list_widget.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
-
+///this class is the page that allows the user to search through his tasks
+//TODO document this plus fix bug
 class SearchPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {

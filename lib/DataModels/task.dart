@@ -1,3 +1,4 @@
+///class to store a task
 class Task{
   String _taskTitle;
   int _index;

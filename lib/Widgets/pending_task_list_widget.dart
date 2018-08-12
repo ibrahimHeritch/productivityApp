@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:productivity_metrics/DataModels/task.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
-//TODO document this
+///class that has the widget that displays the list pending task
 class ListPendingTaskWidget extends StatefulWidget {
+  /// call this when completed is pressed
   final void Function() _onClickCompleted;
+  ///call this when delete is pressed
   final void Function() _onClickDeleted;
-
+  /// the task to be displayed
   final Task task;
 
   ListPendingTaskWidget(this.task,this._onClickCompleted, this._onClickDeleted):super(key:ObjectKey(task.id));
@@ -18,6 +20,7 @@ class ListPendingTaskWidget extends StatefulWidget {
 
 class ListPendingTaskWidgetState extends State<ListPendingTaskWidget>
     with SingleTickerProviderStateMixin {
+  /// open/close animation
   AnimationController _animationCont;
   Animation<double> _animation;
   bool _isOpen;
@@ -25,12 +28,14 @@ class ListPendingTaskWidgetState extends State<ListPendingTaskWidget>
   void Function() _onClickDeleted;
   bool get isOpen => _isOpen;
   Task task;
+  ///height of this widget (width= fill screen)
   final double _height=80.0;
 
   ListPendingTaskWidgetState(this.task,this._onClickCompleted, this._onClickDeleted):super();
 
   @override
   void initState() {
+    //define open animation
     _animationCont =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _animation =
@@ -87,7 +92,7 @@ class ListPendingTaskWidgetState extends State<ListPendingTaskWidget>
                             (MediaQuery.of(context).size.width - 80)),
                     height: _height-1,
                     color: Colors.grey.withOpacity(0.3),
-                    child: Row(
+                    child: Row(//the tile with the completed and delete buttons
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Expanded(
@@ -141,7 +146,7 @@ class ListPendingTaskWidgetState extends State<ListPendingTaskWidget>
                                   onPressed: _onClickCompleted),
                             ),
                           ),
-
+                          //the index of the task
                           Container(
                             width: 80.0,
                             height: _height-1,
@@ -153,6 +158,7 @@ class ListPendingTaskWidgetState extends State<ListPendingTaskWidget>
                           ),
                         ]),
                   ),
+                  //the tile with the title
                   Expanded(
                     child: Container(
                       height: _height,

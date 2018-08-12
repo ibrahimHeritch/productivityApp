@@ -1,14 +1,15 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
-
+///This class has the backend functionality needed to calculate user statistics
 class UserStats {
   DayStats today;
   List<DayStats> month;
   List<DayStats> week;
   Future<Null> getToday() async {
-    today = DayStats();
+    today = DayStats(DateTime.now());
     // calculate todays statistics
     Firestore.instance
         .collection("users/${User
@@ -60,7 +61,8 @@ class UserStats {
         });
       });
     });
-    //Delete old tasks
+    //Delete old tasks (dosent work)
+    //TODO
     Firestore.instance
         .collection("users/${User
         .getInstance()
@@ -83,25 +85,32 @@ class UserStats {
         ds.reference.delete();
       });
     });
-    getMonth();
+    getMonthandWeek();
   }
 
   ///aka get last 30 days
-  Future<Null> getMonth() async {
+  Future<Null> getMonthandWeek() async {
     month=List(30);
+    week=List(7);
     for(int i=1;i<31;i++){
+      DateTime dt=DateTime.now().subtract(Duration(days: i));
       Firestore.instance.document("users/${User
           .getInstance()
           .user
-          .uid}/Statistics/${getMillisecondsOfToday(DateTime.now().subtract(Duration(days: i)))}").snapshots().listen((ds){
+          .uid}/Statistics/${getMillisecondsOfToday(dt)}").snapshots().listen((ds){
         if(ds.exists){
-          month[29-(i-1)]=DayStats(tasks:ds["Tasks"],tasksCompleted: ds["TasksCompleted"],habits: ds["Habits"],habitsCompleted: ds["HabitsCompleted"],index: 29-(i-1));
+          month[29-(i-1)]=DayStats(dt,tasks:ds["Tasks"],tasksCompleted: ds["TasksCompleted"],habits: ds["Habits"],habitsCompleted: ds["HabitsCompleted"]);
         }else{
-          month[29-(i-1)]=DayStats(index: 29-(i-1));
+          month[29-(i-1)]=DayStats(dt);
+        }
+        if(i<8){
+          week[i-1]=month[29-(i-1)];
         }
       });
     }
+
   }
+
 
   String getTodaysId() {
     DateTime dt = DateTime.now();
@@ -115,24 +124,32 @@ class UserStats {
 
   UserStats();
 
-}
+  static double roundToPrecision(double result){
+    int decimals = 2;
+    int fac = pow(10, decimals);
+    return (result * fac).round() / fac;
+  }
 
+}
+///class to store a days statistic
 class DayStats {
   int tasks;
   int tasksCompleted;
   int habits;
   int habitsCompleted;
-  int index;
+  DateTime date;
 
   @override
   String toString() {
-    return 'DayStats{tasks: $tasks, tasksCompleted: $tasksCompleted, habits: $habits, habitsCompleted: $habitsCompleted, index: $index}';
+    return 'DayStats{tasks: $tasks, tasksCompleted: $tasksCompleted, habits: $habits, habitsCompleted: $habitsCompleted, index: $date}';
   }
 
   DayStats(
+      this.date,
       {this.tasks = 0,
       this.tasksCompleted = 0,
       this.habits = 0,
-      this.habitsCompleted = 0,
-      this.index=0});
+      this.habitsCompleted = 0,}
+
+  );
 }

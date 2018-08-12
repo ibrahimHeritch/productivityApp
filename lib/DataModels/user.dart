@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -108,7 +107,7 @@ class User {
   }
 
 
-
+///get todays productivity
   double getTaskCompletenessToday({DayStats day}) {
     num result;
     if(day==null){
@@ -129,29 +128,30 @@ class User {
        result=0.0;
     }
     
-    return roundToPrecision(result);
+    return UserStats.roundToPrecision(result);
   }
+  ///get weeks productivity
   double getTaskCompletenessThisWeek(){
     num sum=0.0;
     for(int i=29;i>29-7;i--){
       sum+=getTaskCompletenessToday(day:_stats.month[i]);
     }
-    return roundToPrecision(sum/7);
+    return UserStats.roundToPrecision(sum/7);
   }
-
+  ///get monthy productivity
   double getTaskCompletenessThisMonth(){
     num sum=0.0;
     for(int i=0;i<_stats.month.length;i++){
       sum+=getTaskCompletenessToday(day:_stats.month[i]);
     }
-    return roundToPrecision(sum/30);
+    return UserStats.roundToPrecision(sum/30);
   }
-  List<DayStats> getMonthly(){
-    return _stats.month;
+  List<DayStats> getWeekly(){
+    return _stats.week;
 }
- double roundToPrecision(double result){
-   int decimals = 2;
-   int fac = pow(10, decimals);
-   return (result * fac).round() / fac;
- }
+
+
+  getMontly() {
+   return _stats.month;
+  }
 }
