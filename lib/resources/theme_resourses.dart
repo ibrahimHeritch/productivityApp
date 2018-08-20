@@ -66,18 +66,6 @@ class ThemeColorProvider extends InheritedWidget {
       case UIColorSchemes.dark:
         (_appThemeKey.currentState as AppThemeState)?.theme = ThemeData.dark();
         break;
-      case UIColorSchemes.green:
-        (_appThemeKey.currentState as AppThemeState)?.theme =
-            ThemeData(primarySwatch: Colors.green);
-        break;
-      case UIColorSchemes.blue:
-        (_appThemeKey.currentState as AppThemeState)?.theme =
-            ThemeData(primarySwatch: Colors.blue);
-        break;
-      case UIColorSchemes.red:
-        (_appThemeKey.currentState as AppThemeState)?.theme =
-            ThemeData(primarySwatch: Colors.red);
-        break;
       default:
         (_appThemeKey.currentState as AppThemeState)?.theme =
             ThemeData(primarySwatch: Colors.orange);
@@ -102,39 +90,19 @@ class AppColors {
   Color _primary = Color.fromRGBO(237,112 , 58, 0.9);
   Color get primary => _primary;
 
-  ///used for the background of the rotary Navigator
-  Color _primaryOpace = Colors.orange.withOpacity(0.5);
-  Color get primaryOpace => _primaryOpace;
 
-  UIColorSchemes currentTheme = UIColorSchemes.orange;
+  UIColorSchemes currentTheme = UIColorSchemes.bright;
 
-  initalizeColors({@required UIColorSchemes scheme = UIColorSchemes.orange}) {
+  initalizeColors({ UIColorSchemes scheme = UIColorSchemes.bright}) {
     currentTheme = scheme;
-    if (scheme == UIColorSchemes.orange) {
-      _primaryOpace = Colors.orange.withOpacity(0.4);
-      _primary = Colors.orange;
+    if (scheme == UIColorSchemes.bright) {
+      _primary = Color.fromRGBO(237,112 , 58, 0.9);
       _secondary = Colors.white;
     } else if (scheme == UIColorSchemes.dark) {
-      _primaryOpace = Color.fromRGBO(
-          Colors.black.red, Colors.black.green, Colors.black.blue, 0.4);
-      _primary = Colors.black87;
+      _primary = Colors.black45;
       _secondary = Colors.orange;
-    } else if (scheme == UIColorSchemes.blue) {
-      _primaryOpace = Color.fromRGBO(
-          Colors.blue.red, Colors.blue.green, Colors.blue.blue, 0.4);
-      _primary = Colors.blue;
-      _secondary = Colors.white;
-    } else if (scheme == UIColorSchemes.green) {
-      _primaryOpace = Color.fromRGBO(Colors.green.red, Colors.green.green,
-          Colors.green.blue, 0.4); //TODO fix this embarassment
-      _primary = Colors.green;
-      _secondary = Colors.white;
-    } else if (scheme == UIColorSchemes.red) {
-      _primaryOpace = Colors.red.withOpacity(0.4);
-      _primary = Colors.red;
-      _secondary = Colors.white;
     }
   }
 }
 
-enum UIColorSchemes { orange, dark, blue, green, red }
+enum UIColorSchemes { bright, dark }

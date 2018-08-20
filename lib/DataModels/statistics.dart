@@ -97,7 +97,7 @@ class UserStats {
       Firestore.instance.document("users/${User
           .getInstance()
           .user
-          .uid}/Statistics/${getMillisecondsOfToday(dt)}").snapshots().listen((ds){
+          .uid}/Statistics/${getMillisecondsOfDay(dt)}").snapshots().listen((ds){
         if(ds.exists){
           month[29-(i-1)]=DayStats(dt,tasks:ds["Tasks"],tasksCompleted: ds["TasksCompleted"],habits: ds["Habits"],habitsCompleted: ds["HabitsCompleted"]);
         }else{
@@ -114,10 +114,10 @@ class UserStats {
 
   String getTodaysId() {
     DateTime dt = DateTime.now();
-    return "${getMillisecondsOfToday(dt)}";
+    return "${getMillisecondsOfDay(dt)}";
   }
 
-  static int getMillisecondsOfToday(DateTime dt) {
+  static int getMillisecondsOfDay(DateTime dt) {
     return dt.millisecondsSinceEpoch -
         (dt.millisecondsSinceEpoch % (24 * 60 * 60 * 1000));
   }
@@ -129,6 +129,7 @@ class UserStats {
     int fac = pow(10, decimals);
     return (result * fac).round() / fac;
   }
+
 
 }
 ///class to store a days statistic

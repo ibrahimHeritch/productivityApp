@@ -70,10 +70,6 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
            decoration: InputDecoration(hintText: "Task Title"),
            controller: _titleController,
          ),
-         TextFormField(
-           decoration: InputDecoration(hintText: "Description(Optional)"),
-           controller: _descriptionController,
-         ),
          Padding(
            padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
            child: Row(

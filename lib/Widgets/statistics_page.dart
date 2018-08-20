@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:productivity_metrics/DataModels/statistics.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
@@ -47,9 +48,11 @@ class _StatPageState extends State<StatPage> {
       body: RefreshIndicator(
         //refresh page
         onRefresh: () async {
-          await Future.delayed(
-              const Duration(seconds: 1, milliseconds: 500), () {});
-          setState(() {});
+          await Future.delayed(const Duration(seconds: 1), () {});
+          if (!User.getInstance().hasTheRightDay()) {
+            await User.getInstance().initStats();
+            setState(() {});
+          }
           return;
         },
         child: SingleChildScrollView(
@@ -206,5 +209,18 @@ class _StatPageState extends State<StatPage> {
         ),
       ),
     );
+  }
+
+  _StatPageState() {
+    SystemChannels.lifecycle.setMessageHandler((msg) async {
+      debugPrint('SystemChannels> $msg');
+      if (msg == AppLifecycleState.resumed.toString()) {
+        //make sure right day is loaded
+        if (!User.getInstance().hasTheRightDay()) {
+          await User.getInstance().initStats();
+          setState(() {});
+        }
+      }
+    });
   }
 }

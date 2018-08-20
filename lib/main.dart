@@ -1,19 +1,40 @@
-import 'dart:async';
 
+import 'package:android_job_scheduler/android_job_scheduler.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:productivity_metrics/DataModels/statistics.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
-import 'package:productivity_metrics/Widgets/TodaysTasks.dart';
 import 'package:productivity_metrics/Widgets/home.dart';
 import 'package:productivity_metrics/Widgets/log_in.dart';
-
 import 'package:productivity_metrics/resources/theme_resourses.dart';
 
-final User user = new User.getInstance();
-
 void main() async{
-   await user.initUser();//init user to check if they are logged in
+   await User.getInstance().initUser();//init user to check if they are logged in
    runApp(new RootWidget());
+   AndroidJobScheduler.scheduleOnce(//TODO logged out safety
+        Duration(milliseconds: 86400001-(DateTime.now().millisecondsSinceEpoch%86400000)), 42, Job,persistentAcrossReboots: true);
+}
+void Job()async{
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  var initializationSettingsAndroid =
+  new AndroidInitializationSettings('@mipmap/ic_launcher');
+  var initializationSettingsIOS = new IOSInitializationSettings();
+  var initializationSettings = new InitializationSettings(
+      initializationSettingsAndroid, initializationSettingsIOS);
+  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      selectNotification: (s){});
+  var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+      'your channel id', 'your channel name', 'your channel description',
+      importance: Importance.Max, priority: Priority.High);
+  var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+  var platformChannelSpecifics = new NotificationDetails(
+      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  await flutterLocalNotificationsPlugin.show(
+  0, 'Started', DateTime.now().toString(), platformChannelSpecifics,
+  payload: 'item id 2');
+User.getInstance().initStats();
+AndroidJobScheduler.scheduleOnce(//TODO logged out safety
+     Duration(milliseconds: 86400000-(DateTime.now().millisecondsSinceEpoch%86400000)), 43, Job,persistentAcrossReboots: true);
 
 }
 
@@ -29,10 +50,11 @@ class ProductivityMetricsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget home;
-    if (!user.isLoggedin()) {
+    if (!User.getInstance().isLoggedin()) {
        home= LoginScreen();
     } else {
-       user.initStats();
+      User.getInstance().initStats();
+
        home = HomePage();
     }
     return MaterialApp(

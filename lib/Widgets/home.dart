@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:productivity_metrics/Widgets/TodaysTasks.dart';
 import 'package:productivity_metrics/Widgets/search.dart';
 import 'package:productivity_metrics/Widgets/statistics_page.dart';
+import 'package:productivity_metrics/resources/theme_resourses.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -35,6 +36,7 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.search), title: Text("Search")),
         ],
         currentIndex: index,
+        fixedColor: Colors.orange,
       ),
     );
 

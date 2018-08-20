@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:productivity_metrics/DataModels/task.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
@@ -38,6 +39,17 @@ class _SearchPageState extends State<SearchPage> {
         onSubmitted: search,
         buildDefaultAppBar: buildAppBar
     );
+    SystemChannels.lifecycle.setMessageHandler((msg)async{
+      debugPrint('SystemChannels> $msg');
+      if(msg==AppLifecycleState.resumed.toString()) {//make sure right day is loaded
+        if(!User.getInstance().hasTheRightDay()){
+          await User.getInstance().initStats();
+          setState(() {
+
+          });
+        }
+      }
+    });
    // searchValue="";
   }
   @override

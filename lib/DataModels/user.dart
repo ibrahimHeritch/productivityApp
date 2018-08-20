@@ -12,7 +12,7 @@ class User {
   FirebaseUser _user;
   static User _instance;
   int dateTime;
-
+  DateTime day;
   UserStats _stats;
 
 
@@ -20,7 +20,7 @@ class User {
   FirebaseUser get user {
     return _user;
   }
-
+///If a user has been instanciated already return that user else make a new one and return it
   factory User.getInstance(){
     if (_instance == null) {
       _instance = User();
@@ -31,25 +31,27 @@ class User {
   User();
 
   ///create this user from email + password
-  Future<String> createUser(
+  Future<Null> createUser(
       {@required String email, @required String password}) async {
-    FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(
+    _user = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
-    return "Successful Login" + user.displayName;
   }
 
   ///login user
-  Future<String> verifyUser(
+  Future<bool> signInEmail(
       {@required String email, @required String password}) async {
-    _user = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email, password: password);
+    try {
+      _user = await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+    }catch(e){
+      print("hhh"+e.toString());
+    }
     initStats();
-    return "Login Successfull" + _user.displayName;
-
+    return true;
   }
 
   ///login with google
-  Future<String> signInGoogle() async {
+  Future<Null> signInGoogle() async {
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     _user = await _firebaseAuth.signInWithGoogle(
@@ -57,7 +59,6 @@ class User {
       idToken: googleAuth.idToken,
     );
     initStats();
-    return ("Welcome " + _user.displayName);
   }
 
   ///log out
@@ -77,7 +78,7 @@ class User {
   }
 
   /// sign in through google silently
-  Future<String> signInGoogleSilently() async {
+  Future<Null> signInGoogleSilently() async {
     GoogleSignInAccount googleUser = await _googleSignIn.signInSilently();
 
     GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -87,7 +88,6 @@ class User {
       idToken: googleAuth.idToken,
     );
     initStats();
-    return "yy";
   }
 
   ///asign currentUser to _user
@@ -95,19 +95,23 @@ class User {
     _user = await _firebaseAuth.currentUser();
     return _user;
   }
-
+///if the right day has been initialized in init stats this it used
+  ///to know if we should call initStats aka a new day has started
   bool hasTheRightDay() {
-    return dateTime == UserStats.getMillisecondsOfToday(DateTime.now())&& _stats!=null && _stats.today!=null;
+    return dateTime == UserStats.getMillisecondsOfDay(DateTime.now())&& _stats!=null && _stats.today!=null;
   }
 
   Future<Null> initStats() async {
     _stats = UserStats();
-    dateTime=UserStats.getMillisecondsOfToday(DateTime.now());
+    day=DateTime.now();
+    dateTime=UserStats.getMillisecondsOfDay(day);
     await _stats.getToday();
   }
 
 
 ///get todays productivity
+/// tasks completed/all tasks
+/// returns -1 if error, 0 if NaN or not rightDay
   double getTaskCompletenessToday({DayStats day}) {
     num result;
     if(day==null){
@@ -146,12 +150,14 @@ class User {
     }
     return UserStats.roundToPrecision(sum/30);
   }
+  ///get a list of productivities for the past week
   List<DayStats> getWeekly(){
     return _stats.week;
 }
 
-
+  ///get a list of productivites for past month
   getMontly() {
    return _stats.month;
   }
+
 }

@@ -13,6 +13,8 @@ dependencies:
   cloud_firestore: ^0.7.3
   flutter_search_bar: ^2.0.3
   charts_flutter: any
+  android_job_scheduler: ^0.0.7
+  flutter_local_notifications: ^0.3.7
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:productivity_metrics/DataModels/user.dart';
+import 'package:productivity_metrics/Widgets/loading_screen.dart';
 import 'package:productivity_metrics/Widgets/log_in.dart';
-import 'package:productivity_metrics/main.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
 
 //TODO: Make this pretty
@@ -30,55 +32,7 @@ class SettingsScreen extends StatelessWidget {
                     "App theme:",
                     style: TextStyle(fontSize: 20.0),
                   ),
-                  DropdownButton<String>(
-                    // value: "Select",
-                    items: <String>["Dark", "Blue", "Green", "Orange", "red"]
-                        .map((String value) {
-                      return new DropdownMenuItem<String>(
-                        value: value,
-                        child: new Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (_value) {
-                      if (_value == "Dark") {
-                        //TODO add more themes possibly extract init
-                        ThemeColorProvider.of(context).appTheme =
-                            UIColorSchemes.dark;
-                        ThemeColorProvider
-                            .of(context)
-                            .appColors
-                            .initalizeColors(scheme: UIColorSchemes.dark);
-                      } else if (_value == "Blue") {
-                        ThemeColorProvider.of(context).appTheme =
-                            UIColorSchemes.blue;
-                        ThemeColorProvider
-                            .of(context)
-                            .appColors
-                            .initalizeColors(scheme: UIColorSchemes.blue);
-                      } else if (_value == "Green") {
-                        ThemeColorProvider.of(context).appTheme =
-                            UIColorSchemes.green;
-                        ThemeColorProvider
-                            .of(context)
-                            .appColors
-                            .initalizeColors(scheme: UIColorSchemes.green);
-                      } else if (_value == "Orange") {
-                        ThemeColorProvider.of(context).appTheme =
-                            UIColorSchemes.orange;
-                        ThemeColorProvider
-                            .of(context)
-                            .appColors
-                            .initalizeColors(scheme: UIColorSchemes.orange);
-                      } else if (_value == "red") {
-                        ThemeColorProvider.of(context).appTheme =
-                            UIColorSchemes.red;
-                        ThemeColorProvider
-                            .of(context)
-                            .appColors
-                            .initalizeColors(scheme: UIColorSchemes.red);
-                      }
-                    },
-                  )
+                  themeSelectorButton(context),
                 ],
               )),
           Padding(
@@ -120,9 +74,34 @@ class SettingsScreen extends StatelessWidget {
                     "Reset Progress:",
                     style: TextStyle(fontSize: 20.0),
                   ),
-                  Text(
-                    "TODO",
-                    style: TextStyle(fontSize: 20.0),
+                  RaisedButton(
+                    color: ThemeColorProvider.of(context).appColors.primary,
+                    child: new Text("Reset"),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0)),
+                    onPressed: ()  {
+                     showDialog(context: context,
+                       builder: (BuildContext context) {
+                         return AlertDialog(
+                           title: Text(
+                               "Are you sure you what to reset all Progress?"),
+                             actions: <Widget>[
+                           FlatButton(
+                             child: new Text("No"),
+                             onPressed: () {
+                               Navigator.of(context).pop();
+                             },
+                           ),
+                           FlatButton(
+                             child: new Text("Reset"),
+                             onPressed: (){reset(context);},
+                           ),
+                         ],
+                         );
+                       },
+
+                     );
+                    },
                   )
                 ],
               )),
@@ -141,7 +120,7 @@ class SettingsScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0)),
                     onPressed: () async {
-                      await user.logOut();
+                      User.getInstance().logOut();
                       Navigator.pop(context);
                       Navigator.pushReplacement(
                           context,
@@ -154,5 +133,43 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget themeSelectorButton(context) {
+    if(ThemeColorProvider.of(context).appColors.currentTheme==UIColorSchemes.bright){
+      return RaisedButton(
+        color: ThemeColorProvider.of(context).appColors.primary,
+        child: new Text("Dark"),
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(30.0)),
+        onPressed: () {
+          ThemeColorProvider.of(context).appTheme =
+              UIColorSchemes.dark;
+          ThemeColorProvider.of(context).appColors.initalizeColors(scheme: UIColorSchemes.dark);
+
+        },
+      );
+    }else{
+      return RaisedButton(
+        color: ThemeColorProvider.of(context).appColors.primary,
+        child: new Text("Light"),
+        shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(30.0)),
+        onPressed: () {
+          ThemeColorProvider.of(context).appTheme =
+              UIColorSchemes.bright;
+          ThemeColorProvider.of(context).appColors.initalizeColors(scheme: UIColorSchemes.bright);
+
+        },
+      );
+    }
+  }
+
+  void reset(context) {
+    DocumentReference dr = Firestore.instance.document("users/${User
+        .getInstance()
+        .user
+        .uid}");
+    dr.delete();
   }
 }
