@@ -7,11 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:productivity_metrics/DataModels/task.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
-import 'package:productivity_metrics/Widgets/pending_task_list_widget.dart';
 import 'package:productivity_metrics/Widgets/completed_task_list_widget.dart';
+import 'package:productivity_metrics/Widgets/pending_task_list_widget.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
 ///this class is the page that allows the user to search through his tasks
-//TODO document this plus fix bug
+///it uses flutter_search_bar dependency as documented here
+///https://pub.dartlang.org/packages/flutter_search_bar
+//TODO fix bug when searching a gray bar appears at top of screen
 class SearchPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {

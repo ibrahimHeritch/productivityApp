@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 Inherited widget+ theme combo that handles the theme of the app when the user selects
 wrap Material app in this the set theme data of MA as the theme specified here
 then use the appTheme setter to set theme during runtime
+honestly the theme class in flutter could most probably handle this but i wanted to get my hands dirty making some custom inherited widgets
  */
-//TODO not use appColors?
+
 //key refering to the theme
 final GlobalKey _themeGlobalKey = new GlobalKey();
 

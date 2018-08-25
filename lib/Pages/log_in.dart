@@ -1,17 +1,18 @@
-//C3:32:1E:79:21:CE:06:5A:DC:56:C0:24:15:4C:08:EE:A0:26:BE:0C
+
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
-import 'package:productivity_metrics/Widgets/TodaysTasks.dart';
-import 'package:productivity_metrics/Widgets/home.dart';
-import 'package:productivity_metrics/Widgets/loading_screen.dart';
-import 'package:productivity_metrics/main.dart';
+import 'package:productivity_metrics/Pages/TodaysTasks.dart';
+import 'package:productivity_metrics/Pages/home.dart';
+import 'package:productivity_metrics/Pages/loading_screen.dart';
+
 
 /// Class name says it all
 /// works with google signin
 /// logic implemented in the user class
+/// Login With Email isn't fully implemented at the moment
 //TODO verification + login with email + create account + forgot password
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -42,8 +43,14 @@ class LoginScreenState extends State<LoginScreen> {
       body: SingleChildScrollView(
         child: Container(
           //background picture
-          height: MediaQuery.of(context).size.height, //TODO FIX this
-          width: MediaQuery.of(context).size.height,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: ExactAssetImage("assets/backgroundLogin.jpg"),
@@ -114,8 +121,27 @@ class LoginScreenState extends State<LoginScreen> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             new BorderRadius.circular(30.0)),
-                                    child: Text(
-                                        "Login With Google"), //todo add google icon
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment
+                                          .center,
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Image.asset(
+                                          "assets/glogo.png",
+                                          height: 18.0,
+                                          width: 18.0,
+                                        ),
+                                        SizedBox(width: 16.0),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Text(
+                                              "Sign in with Google"
+                                          ),
+                                        ),
+                                      ],),
                                     onPressed: _googleLogin,
                                   ),
                                 ),
@@ -178,7 +204,6 @@ class LoginScreenState extends State<LoginScreen> {
       form.save();
       User.getInstance().signInEmail(email: _email, password: _password).then(
           (onValue) {
-        //TODO check if this is correct
         if (onValue) {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomePage()));
@@ -195,17 +220,16 @@ class LoginScreenState extends State<LoginScreen> {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => new LoadingScreen()));
 
+
     try {
-      //try to login silently
-      await User.getInstance().signInGoogleSilently();
-    } catch (e) {
-      try {
         //try login non-silently
         await User.getInstance().signInGoogle();
       } catch (e) {
-        print("error"); //TODO handle error
+      Navigator.pop(context); //pop loading screen
+      showInSnackBar("Something whent wrong:" + e.message);
+
       }
-    }
+
 
     if (User.getInstance().isLoggedin()) {
       Navigator.pop(context); //pop loading screen

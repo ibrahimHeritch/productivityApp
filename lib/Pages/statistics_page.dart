@@ -1,13 +1,13 @@
 import 'dart:async';
 
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:productivity_metrics/DataModels/statistics.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
+import 'package:productivity_metrics/Pages/Settings.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:productivity_metrics/Widgets/Settings.dart';
 
 class StatPage extends StatefulWidget {
   @override
@@ -77,7 +77,8 @@ class _StatPageState extends State<StatPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: Text("Today's Productivity: ${pToday*100}"),
+                        child: Text("Today's Productivity: ${(pToday * 100)
+                            .toStringAsFixed(2)}"),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -109,7 +110,8 @@ class _StatPageState extends State<StatPage> {
                         Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Text(
-                              "Week's Average Daily Productivity: ${pWeek*100}"),
+                              "Week's Average Daily Productivity: ${(pWeek *
+                                  100).toStringAsFixed(2)}"),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(10.0),
@@ -166,7 +168,8 @@ class _StatPageState extends State<StatPage> {
                         Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Text(
-                              "30 Day Average Daily Productivity: ${pMonth*100}"),
+                              "30 Day Average Daily Productivity: ${(pMonth *
+                                  100).toStringAsFixed(2)}"),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(10.0),

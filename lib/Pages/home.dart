@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:productivity_metrics/Widgets/TodaysTasks.dart';
-import 'package:productivity_metrics/Widgets/search.dart';
-import 'package:productivity_metrics/Widgets/statistics_page.dart';
-import 'package:productivity_metrics/resources/theme_resourses.dart';
+import 'package:productivity_metrics/Pages/TodaysTasks.dart';
+import 'package:productivity_metrics/Pages/search.dart';
+import 'package:productivity_metrics/Pages/statistics_page.dart';
 
 class HomePage extends StatefulWidget {
   @override

@@ -24,7 +24,7 @@ class ListPendingTaskWidgetState extends State<ListPendingTaskWidget>
   AnimationController _animationCont;
   Animation<double> _animation;
   bool _isOpen;
-  void Function() _onClickCompleted;//todo
+  void Function() _onClickCompleted;
   void Function() _onClickDeleted;
   bool get isOpen => _isOpen;
   Task task;

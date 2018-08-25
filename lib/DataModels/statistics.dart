@@ -61,7 +61,7 @@ class UserStats {
         });
       });
     });
-    //Delete old tasks (dosent work)
+    //Delete old tasks (dosen't work)
     //TODO
     Firestore.instance
         .collection("users/${User

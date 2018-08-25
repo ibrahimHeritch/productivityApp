@@ -4,12 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:productivity_metrics/DataModels/statistics.dart';
 import 'package:productivity_metrics/DataModels/task.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
-import 'package:productivity_metrics/Widgets/pending_task_list_widget.dart';
-import 'package:productivity_metrics/Widgets/Settings.dart';
+import 'package:productivity_metrics/Pages/Settings.dart';
 import 'package:productivity_metrics/Widgets/add_task_dialog.dart';
 import 'package:productivity_metrics/Widgets/completed_task_list_widget.dart';
+import 'package:productivity_metrics/Widgets/pending_task_list_widget.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
 
 ///the main homepage that displays todays taskes
@@ -23,6 +24,7 @@ class TodaysTasks extends StatefulWidget {
 class _TodaysTasksState extends State<TodaysTasks> {
   GlobalKey dialog = GlobalKey();
   DateTime dt;
+  Stack tasksList;
   _TodaysTasksState() {
     SystemChannels.lifecycle.setMessageHandler((msg) async {
       debugPrint('SystemChannels> $msg');
@@ -30,10 +32,19 @@ class _TodaysTasksState extends State<TodaysTasks> {
         //make sure right day is loaded
         if (!User.getInstance().hasTheRightDay()) {
           await User.getInstance().initStats();
-          setState(() {dt=DateTime.now();});
+        }
+        if (User
+            .getInstance()
+            .dateTime != UserStats.getMillisecondsOfDay(dt)) {
+          dt = DateTime.now();
+          setState(() {
+            tasksList = getTasksList();
+          });
         }
       }
-    });
+      }
+    );
+    tasksList = getTasksList();
   }
 
   @override
@@ -43,7 +54,7 @@ class _TodaysTasksState extends State<TodaysTasks> {
 
   @override
   Widget build(BuildContext context) {
-    dt = DateTime.now();
+
     return new Scaffold(
       //App Bar contains title, activities: add task, open settings
       appBar: new AppBar(
@@ -73,53 +84,7 @@ class _TodaysTasksState extends State<TodaysTasks> {
 
         ],
       ),
-      body: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          RefreshIndicator(
-            //Reload page (page updates automatically except when it doesn't)
-            onRefresh: () async {
-              await Future.delayed(
-                  const Duration(seconds: 1), () {});
-
-              if (!User.getInstance().hasTheRightDay()) {
-                await User.getInstance().initStats();
-                setState(() {dt=DateTime.now();});
-              }
-              return;
-            },
-            child: StreamBuilder(
-                stream: Firestore.instance
-                    .collection("users/${User
-                      .getInstance()
-                      .user
-                      .uid}/Tasks")
-                    .orderBy("dueDate")
-                    .orderBy("isComplete", descending: false)
-                    .where("dueDate",
-                        isGreaterThanOrEqualTo:
-                            DateTime(dt.year, dt.month, dt.day),
-                        isLessThan: DateTime(dt.year, dt.month, dt.day)
-                            .add(Duration(days: 1)))
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    //TODO prevent adding a new task when the page is loading
-                    return const Text(
-                        'Loading...'); //TODO replace this with something cool
-                  } else {
-                    return ListView.builder(
-                        itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot ds = snapshot.data.documents[index];
-                          return _buildTaskWidget(ds["text"], index,
-                              ds.documentID, ds["isComplete"]);
-                        });
-                  }
-                }),
-          ),
-        ],
-      ),
+      body: tasksList,
     );
   }
 
@@ -159,7 +124,9 @@ class _TodaysTasksState extends State<TodaysTasks> {
           title: new Text("Add Task"),
           content: AddTaskDialog(dialog)
             ..descriptionController =
-                TextEditingController() //TODO remove discription
+            TextEditingController()
+
+          ///description are not used as of yet maybe in future versions
             ..titleController = titleController,
           actions: <Widget>[
             FlatButton(
@@ -192,7 +159,7 @@ class _TodaysTasksState extends State<TodaysTasks> {
               //TODO find a better fix
               .now()
               .millisecondsSinceEpoch
-              .toString(); //todo prevent duplicates
+              .toString(); //todo prevent duplicates it is possible that is the user added to  different tasks at the same time from 2 different devices that they will override
       Firestore.instance.runTransaction((Transaction t) async {
         print("this is called");
         Firestore.instance
@@ -221,4 +188,64 @@ class _TodaysTasksState extends State<TodaysTasks> {
           .uid}/Tasks/${t.id}");
     dr.updateData({"isComplete": true});
   }
+
+  Stack getTasksList() {
+    if (dt == null) {
+      dt = DateTime.now();
+    }
+    return Stack(
+      key: Key(dt.toIso8601String()),
+      alignment: Alignment.center,
+      children: <Widget>[
+        RefreshIndicator(
+          //Reload page (page updates automatically except when it doesn't)
+          onRefresh: () async {
+            await Future.delayed(
+                const Duration(seconds: 1), () {});
+
+            //if (!User.getInstance().hasTheRightDay()) {
+            await User.getInstance().initStats();
+            dt = DateTime.now();
+            setState(() {
+              tasksList = getTasksList();
+            });
+            //}
+            return;
+          },
+          child: StreamBuilder(
+              stream: Firestore.instance
+                  .collection("users/${User
+                  .getInstance()
+                  .user
+                  .uid}/Tasks")
+                  .orderBy("dueDate")
+                  .orderBy("isComplete", descending: false)
+                  .where("dueDate",
+                  isGreaterThanOrEqualTo:
+                  DateTime(dt.year, dt.month, dt.day),
+                  isLessThan: DateTime(dt.year, dt.month, dt.day)
+                      .add(Duration(days: 1)))
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  //TODO prevent adding a new task when the page is loading because it causes problems
+                  return const Text(
+                      'Loading...'); //TODO replace this with something cool like an animation
+                } else {
+                  return ListView.builder(
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot ds = snapshot.data.documents[index];
+                        return _buildTaskWidget(ds["text"], index,
+                            ds.documentID, ds["isComplete"]);
+                      });
+                }
+              }),
+        ),
+      ],
+    );
+  }
+
+
+
 }

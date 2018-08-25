@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:productivity_metrics/DataModels/user.dart';
-import 'package:productivity_metrics/Widgets/loading_screen.dart';
-import 'package:productivity_metrics/Widgets/log_in.dart';
+import 'package:productivity_metrics/Pages/log_in.dart';
 import 'package:productivity_metrics/resources/theme_resourses.dart';
 
-//TODO: Make this pretty
+
 ///setting screen
 class SettingsScreen extends StatelessWidget {
   @override
@@ -165,6 +164,7 @@ class SettingsScreen extends StatelessWidget {
     }
   }
 
+//TODO make this work
   void reset(context) {
     DocumentReference dr = Firestore.instance.document("users/${User
         .getInstance()

@@ -1,6 +1,8 @@
 # productivity_metrics
 
-A app to meassure your productivity
+A app to measure your productivity
+I made this simple app to get familiar with flutter
+This is not completely finished it still needs some work
 
 ## Getting Started
 
